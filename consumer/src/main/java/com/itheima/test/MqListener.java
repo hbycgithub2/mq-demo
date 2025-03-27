@@ -25,4 +25,16 @@ public class MqListener {
         Thread.sleep(200);
     }
 
+    @RabbitListener(queues = "fanout.queue1")
+    public void listenFanoutQueue1(String msg) throws InterruptedException {
+        System.out.println("消费者1 收到了fanout.queue1的消息：[" + msg + "]");
+        Thread.sleep(20);
+    }
+
+    @RabbitListener(queues = "fanout.queue2")
+    public void listenFanoutQueue2(String msg) throws InterruptedException {
+        System.out.println("消费者2 收到了fanout.queue2的消息：[" + msg + "]");
+        Thread.sleep(200);
+    }
+
 }
