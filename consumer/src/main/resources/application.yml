@@ -1,0 +1,12 @@
+server:
+  port: 8086
+logging:
+  level:
+    com: info
+spring:
+  rabbitmq:
+    host: 192.168.26.130  # 若应用在宿主机运行，使用宿主机 IP
+    port: 5672          # AMQP 通信端口（非管理端口 15672）
+    virtual-host: /hmall  # 与容器内创建的虚拟主机一致
+    username: hmall
+    password: 123456
