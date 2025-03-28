@@ -2,13 +2,18 @@ package com.itheima.test;
 
 
 import com.itheima.publisher.PublisherApplication;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.util.HashMap;
-
+import java.util.UUID;
+@Slf4j
 @SpringBootTest(classes = PublisherApplication.class)  // 明确指定主配置类
 public class SpringAmqpTest {
     @Autowired
@@ -66,5 +71,32 @@ public class SpringAmqpTest {
         msg.put("name", "jack");
         msg.put("age", 21);
         rabbitTemplate.convertAndSend("object.queue",msg);
+    }
+
+    @Test
+    void testConfirmCallback() throws InterruptedException {
+        // 1.创建cd
+        CorrelationData cd = new CorrelationData(UUID.randomUUID().toString());
+        // 2.添加ConfirmCallback
+        cd.getFuture().addCallback(new ListenableFutureCallback<CorrelationData.Confirm>() {
+            @Override
+            public void onFailure(Throwable ex) {
+                log.error("消息回调失败", ex);
+            }
+
+            @Override
+            public void onSuccess(CorrelationData.Confirm result) {
+                log.debug("收到confirm callback回执");
+                if (result.isAck()) {
+                    // 消息发送成功
+                    log.debug("消息发送成功,收到ack");
+                } else {
+                    // 消息发送失败
+                    log.error("消息发送失败，收到nack,原因：{}", result.getReason());
+                }
+            }
+        });
+        rabbitTemplate.convertAndSend("hmall.direct", "red2", "hello", cd);
+        Thread.sleep(2000);
     }
 }
