@@ -4,6 +4,9 @@ package com.itheima.test;
 import com.itheima.publisher.PublisherApplication;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.ListableBeanFactory;
@@ -11,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.UUID;
 @Slf4j
@@ -98,5 +102,16 @@ public class SpringAmqpTest {
         });
         rabbitTemplate.convertAndSend("hmall.direct", "red2", "hello", cd);
         Thread.sleep(2000);
+    }
+
+    @Test
+    void testPageOut() {
+        Message message = MessageBuilder
+                .withBody("hello".getBytes(StandardCharsets.UTF_8))
+                .setDeliveryMode(MessageDeliveryMode.NON_PERSISTENT).build();
+        for (int i = 0; i < 1000000; i++) {
+            rabbitTemplate.convertAndSend("simple.queue",message);
+        }
+
     }
 }
