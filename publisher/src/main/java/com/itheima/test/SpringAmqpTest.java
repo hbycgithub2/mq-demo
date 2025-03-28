@@ -7,6 +7,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.HashMap;
+
 @SpringBootTest(classes = PublisherApplication.class)  // 明确指定主配置类
 public class SpringAmqpTest {
     @Autowired
@@ -56,5 +58,13 @@ public class SpringAmqpTest {
         //rabbitTemplate.convertAndSend(exchangeName, "japan.news", msg);
         //rabbitTemplate.convertAndSend(exchangeName, "china.news", msg);
         rabbitTemplate.convertAndSend(exchangeName, "china.weather", msg);
+    }
+
+    @Test
+    void testSendObject() {
+        HashMap<Object, Object> msg = new HashMap<>(2);
+        msg.put("name", "jack");
+        msg.put("age", 21);
+        rabbitTemplate.convertAndSend("object.queue",msg);
     }
 }
