@@ -10,3 +10,8 @@ spring:
     virtual-host: /hmall  # 与容器内创建的虚拟主机一致
     username: hmall
     password: 123456
+    connection-timeout: 1s # 设置MQ的连接超时时间
+    template:
+      retry:
+        enabled: true # 开启超时重试机制
+        multiplier: 2 # 失败后下次的等待时长倍数，=initial-interval*multiplier
