@@ -110,7 +110,7 @@ public class SpringAmqpTest {
                 .withBody("hello".getBytes(StandardCharsets.UTF_8))
                 .setDeliveryMode(MessageDeliveryMode.NON_PERSISTENT).build();
         for (int i = 0; i < 1000000; i++) {
-            rabbitTemplate.convertAndSend("simple.queue",message);
+            rabbitTemplate.convertAndSend("lazy .queue",message);
         }
 
     }

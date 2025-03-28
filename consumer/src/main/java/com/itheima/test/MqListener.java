@@ -15,6 +15,8 @@ public class MqListener {
     @RabbitListener(queues = "simple.queue")
     public void listenSimpleQueue(String msg) {
         System.out.println("消费者收到了smiple.queue的消息：[" + msg + "]");
+        throw new RuntimeException("故意的");
+        //throw new MessageConversionException("故意的");
     }
 
     @RabbitListener(queues = "work.queue")
