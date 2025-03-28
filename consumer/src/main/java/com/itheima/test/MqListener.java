@@ -37,4 +37,16 @@ public class MqListener {
         Thread.sleep(200);
     }
 
+    @RabbitListener(queues = "direct.queue1")
+    public void listenDirectQueue1(String msg) throws InterruptedException {
+        System.out.println("消费者1 收到了direct.queue1的消息：[" + msg + "]");
+        Thread.sleep(20);
+    }
+
+    @RabbitListener(queues = "direct.queue2")
+    public void listenDirectQueue2(String msg) throws InterruptedException {
+        System.out.println("消费者2 收到了direct.queue2的消息：[" + msg + "]");
+        Thread.sleep(200);
+    }
+
 }
